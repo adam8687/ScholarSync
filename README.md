@@ -1,5 +1,7 @@
 **ScholarSync is a mobile application designed to simplify the scholarship search process for students by aggregating publicly available data from multiple reputable scholarship websites. The app provides users with an intuitive interface to discover scholarships, bookmark their favorites, and access application links with ease. ScholarSync aims to reduce the stress and time spent manually searching for scholarships while driving visibility for scholarship providers.**
 
+Watch the video: https://youtu.be/30S2AW2gt-0?si=nnOc-zyQ2Nzj6qfJ
+
 **Features:**
 Search Aggregation: Pulls data from top scholarship websites like Fastweb, Scholarships.com, and Scholarships360.
 
