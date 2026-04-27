@@ -2,7 +2,6 @@
 
 > An iOS app that aggregates scholarship opportunities from across the web into a single, intuitive experience — helping students spend less time searching and more time applying.
 
-📱 **[Watch the Demo](https://youtu.be/30S2AW2gt-0?si=nnOc-zyQ2Nzj6qfJ)**
 
 ---
 
