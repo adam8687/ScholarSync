@@ -1,83 +1,113 @@
-**ScholarSync is a mobile application designed to simplify the scholarship search process for students by aggregating publicly available data from multiple reputable scholarship websites. The app provides users with an intuitive interface to discover scholarships, bookmark their favorites, and access application links with ease. ScholarSync aims to reduce the stress and time spent manually searching for scholarships while driving visibility for scholarship providers.**
+# ScholarSync
 
-Watch the video: https://youtu.be/30S2AW2gt-0?si=nnOc-zyQ2Nzj6qfJ
+> An iOS app that aggregates scholarship opportunities from across the web into a single, intuitive experience — helping students spend less time searching and more time applying.
 
-**Features:**
-Search Aggregation: Pulls data from top scholarship websites like Fastweb, Scholarships.com, and Scholarships360.
+📱 **[Watch the Demo](https://youtu.be/30S2AW2gt-0?si=nnOc-zyQ2Nzj6qfJ)**
 
-Bookmarking: Save scholarships for quick access later.
+---
 
-Detailed Scholarship Views: View comprehensive scholarship details such as name, description, amount, deadline, and application link.
+## Overview
 
-iOS-native: Developed for iPhone users using Swift and Xcode.
+Finding scholarships is a fragmented, time-consuming process. Students routinely visit dozens of websites, often encountering duplicate listings, outdated deadlines, and poor mobile experiences. **ScholarSync** solves this by building a unified scholarship discovery layer on top of publicly available data from leading providers — delivering a clean, bookmarkable, always-up-to-date feed directly on iPhone.
 
-**Motive**
+The project also served as a deep investigation into the real-world viability of client-side web scraping in production mobile apps: parsing heterogeneous HTML at runtime, handling site-structure drift, and maintaining a responsive UI while executing network-heavy workloads — all without a backend server.
 
-ScholarSync was built as part of an exploration into the viability of web scraping in mobile applications. By focusing on the practical challenges and benefits of integrating web scraping, this app provides a case study for ethical data aggregation and its potential for positive impact.
+---
 
+## Features
 
+| Feature | Description |
+|---|---|
+| **Search Aggregation** | Concurrently scrapes Fastweb, Scholarships.com, and Scholarships360 and merges results into a single deduplicated feed |
+| **Bookmark Management** | Persistent local bookmarking so students can track opportunities across sessions |
+| **Detailed Scholarship Views** | Name, description, award amount, deadline, and direct application link surfaced in a single tap |
+| **iOS-Native Performance** | Built entirely in Swift with no cross-platform overhead; runs smoothly on any modern iPhone |
 
+---
 
-**Installation**
+## Technical Architecture
 
-Clone this repository:
+```
+ScholarSync/
+├── MainVC.swift               # Root feed controller; orchestrates concurrent scrape tasks
+├── SearchView.swift           # Search input + live-filter logic
+├── SelectedScholarshipVC.swift# Detailed scholarship view + deep-link to application page
+├── AboutVC.swift              # App info
+├── Services/                  # Networking + HTML parsing layer (SwiftSoup)
+├── TableViewCell.swift        # Custom UITableViewCell for scholarship cards
+└── SceneDelegate / AppDelegate
+```
 
+**Key engineering decisions:**
+
+- **Concurrent scraping via async/await** — each scholarship source is fetched on its own task, keeping the main thread fully free and reducing total load time.
+- **SwiftSoup for robust HTML parsing** — CSS-selector–based extraction isolates the app from minor DOM changes and keeps parsing logic declarative and readable.
+- **Error-resilient pipeline** — individual source failures are caught and logged without crashing the overall feed, so a single site outage never degrades the full user experience.
+- **No backend required** — all aggregation happens on-device, eliminating server costs and infrastructure complexity while keeping user data fully private.
+
+---
+
+## Installation
+
+```bash
 git clone https://github.com/adam8687/ScholarSync.git
+```
 
-cd scholarsync  
+1. Open `ScholarSync.xcodeproj` in Xcode (14+).
+2. Select your target device or simulator (iOS 15+).
+3. Build & run (`⌘R`).
 
-Open the ScholarSync.xcodeproj file in Xcode.
+No API keys or external accounts required.
 
-Build and run the project on your iOS device or simulator.
+---
 
+## Technologies
 
-**Technologies Used**
+| Layer | Choice | Rationale |
+|---|---|---|
+| Language | Swift | Type-safe, performant, first-class iOS support |
+| UI Framework | UIKit / Storyboard | Fine-grained layout control for custom card designs |
+| HTML Parsing | SwiftSoup | Battle-tested CSS-selector API; pure Swift, no C deps |
+| Concurrency | Swift Concurrency (async/await) | Structured, readable async code with built-in cancellation |
+| Persistence | UserDefaults / Codable | Lightweight local storage suitable for bookmark payloads |
 
-Language: Swift
+---
 
-IDE: Xcode
+## Engineering Challenges
 
-Web Scraping Libraries: SwiftSoup (for parsing HTML content)
+**Heterogeneous HTML structures** — each scholarship site uses a different DOM layout and class-naming convention. The scraping layer abstracts each source behind a common `ScholarshipProvider` protocol, so new sites can be added without touching existing parsing logic.
 
-Framework: Storyboard
+**Terms-of-service compliance** — publicly accessible, non-login-gated data only. Rate limiting and `robots.txt` are respected. No proprietary or personally identifiable data is stored or transmitted.
 
+**Deduplication across sources** — scholarships appear on multiple aggregators. A lightweight normalization pass (name + amount + deadline fingerprint) removes duplicates before the feed is rendered.
 
+**Performance on-device** — parsing HTML is CPU-intensive. Work is dispatched off the main thread and results are batched into UI updates to maintain 60 fps scrolling throughout.
 
-**Challenges Faced**
+---
 
-Adapting scraping algorithms to varied website HTML structures.
+## Roadmap
 
-Ensuring compliance with terms of service for data sources.
+- [ ] **Profile-based recommendations** — match scholarships to a student's GPA, major, and demographics using on-device ML (Core ML)
+- [ ] **Push notification reminders** — deadline alerts for bookmarked scholarships
+- [ ] **Expanded source coverage** — modular provider architecture makes adding new scrapers straightforward
+- [ ] **Android port** — Kotlin Multiplatform candidate for shared parsing logic
+- [ ] **Enhanced filtering & sorting** — by amount, deadline, eligibility criteria
 
-Handling scraping errors such as inaccessible information and redundant data entries.
+---
 
-Balancing performance and functionality for seamless user experience.
+## Ethical Considerations
 
+ScholarSync aggregates only publicly available, non-login-gated information. It does not store user data on external servers, does not circumvent paywalls, and attributes all scholarship data to its original source. The project is intended as a discoverability layer that drives traffic *to* scholarship providers, not away from them.
 
+---
 
-**Future Enhancements (Version 2.0)**
+## License
 
-Profile-Based Suggestions: Introduce user profiles for personalized scholarship recommendations.
+MIT — see [LICENSE](LICENSE) for details.
 
-Enhanced Data Extraction: Expand scraping algorithms to improve accuracy and adapt to more websites.
+---
 
-Android Version: Develop a version of ScholarSync for Android devices.
+## Acknowledgments
 
-Improved UI: Add more features for filtering, sorting, and managing bookmarked scholarships.
-
-
-
-**Ethical Considerations**
-
-ScholarSync only collects and displays publicly available data. It complies with ethical guidelines and seeks to ensure transparency regarding data sources.
-
-**License**
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-**Acknowledgments**
-
-Special thanks to:
-
-SwiftSoup for providing powerful HTML parsing capabilities,
-
-Scholarship providers for their invaluable resources.
+- [SwiftSoup](https://github.com/scinfu/SwiftSoup) for its excellent HTML parsing API
+- Fastweb, Scholarships.com, and Scholarships360 for making scholarship data publicly accessible
